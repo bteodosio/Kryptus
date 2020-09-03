@@ -68,6 +68,31 @@ void mostrarPrimeiro(struct listaEncadeada *ponteiroLista){
     
 }
 
+void mostrarValorUnico(struct listaEncadeada *ponteiroLista,int valor){
+    int i;
+    if(ponteiroLista)
+    {
+        for(i=1;i<valor;i++){
+
+            if(ponteiroLista!=NULL){
+                ponteiroLista=ponteiroLista->ponteiroId;
+            }else
+            {
+                break;
+            }
+        }
+
+        if(ponteiroLista!=NULL){
+            printf(" %d\n", ponteiroLista->nNumeros);
+        }else
+            printf("Valor nao encontrado.\n");
+    }else
+    {
+        printf("Lista vazia.\n");
+    }
+    
+}
+
 int main(void)
 {
     struct listaEncadeada *listaPrincipal = NULL;
@@ -97,6 +122,8 @@ int main(void)
             mostrarPrimeiro(listaPrincipal);
         }else if(strcmp(comando,"all") == 0){
             exibirLista(listaPrincipal);
+        }else if(strcmp(comando,"get") == 0){
+            mostrarValorUnico(listaPrincipal,atoi(strtok (NULL,"")));
         }
 
         printf("Prompt:> ");

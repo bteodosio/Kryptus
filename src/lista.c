@@ -22,6 +22,10 @@ typedef struct {
 
 } listaElementos;
 
+const int ordernarCrescente = 1;
+const int ordernarDecrescente = 0;
+
+
 void exibirLista(listaElementos *ponteiroLista)
 {
     elementosLista *elementoListaTemp = NULL;
@@ -142,28 +146,34 @@ void removerValor(listaElementos *ponteiroLista, int valor){
 
     if(ponteiroLista->numeroElementos != 0){
         
-        elementoListaTemp = ponteiroLista->itensLista;
-
-        if(elementoListaTemp->intConteudo == valor){
-            printf("Entrei\n");
-            ponteiroLista->itensLista = NULL;
+        if(ponteiroLista->itensLista->intConteudo == valor){
+            
+            ponteiroLista->itensLista = ponteiroLista->itensLista->ponteiroProximo;
             ponteiroLista->numeroElementos--;
             printf("O valor %d foi removido com sucesso!\n",valor);
+
         }else{
-            while (elementoListaTemp->ponteiroProximo != NULL && elementoListaTemp->intConteudo!=valor)
+
+            elementoListaTemp = ponteiroLista->itensLista;
+
+            while (ponteiroLista->itensLista->ponteiroProximo != NULL && ponteiroLista->itensLista->ponteiroProximo->intConteudo != valor)
             {
-                elementoListaTemp = elementoListaTemp->ponteiroProximo;
+                ponteiroLista->itensLista = ponteiroLista->itensLista->ponteiroProximo;
             }
 
-            if(elementoListaTemp != NULL){
-                elementoListaTemp = NULL;
+            if(ponteiroLista->itensLista->ponteiroProximo != NULL && ponteiroLista->itensLista->ponteiroProximo->intConteudo == valor){
+
+                ponteiroLista->itensLista->ponteiroProximo = ponteiroLista->itensLista->ponteiroProximo->ponteiroProximo;
+                ponteiroLista->numeroElementos--;
                 printf("O valor %d foi removido com sucesso!\n",valor);
+
             }else{
                 printf("O valor %d nao foi encontrado.\n",valor);
             }
-            
+
+            ponteiroLista->itensLista = elementoListaTemp;
+
         }
-        
     }else
     {
         printf("Lista vazia.\n");
@@ -172,27 +182,49 @@ void removerValor(listaElementos *ponteiroLista, int valor){
     
 }
 
+void ordernarLista(listaElementos *ponteiroLista, int tipoOrdenacao){
+    if(ponteiroLista->numeroElementos != 0){
+        elementosLista *elementoListaTemp = ponteiroLista->itensLista;
+        elementosLista *elementoAuxiliaTroca;
+
+        while(elementoListaTemp->ponteiroProximo != NULL){
+            if(elementoListaTemp->intConteudo < elementoListaTemp->ponteiroProximo->intConteudo){
+                printf("Entrei menor\n");
+                elementoAuxiliaTroca = elementoListaTemp->ponteiroProximo;
+                elementoListaTemp->ponteiroProximo = elementoListaTemp->ponteiroProximo->ponteiroProximo;
+                elementoAuxiliaTroca->ponteiroProximo = elementoListaTemp;
+                elementoListaTemp = elementoAuxiliaTroca;
+            }
+            elementoListaTemp = elementoListaTemp->ponteiroProximo;
+        }
+
+    }else{
+        printf("Lista vazia.\n");
+    }
+}
+
 int main(void)
 {
     listaElementos *listaPrincipal = NULL;
     char entrada[1000];
-    int numero;
+    char * opcaoComando;
     char * comando;
 
     listaPrincipal = (listaElementos*) malloc(sizeof(listaElementos*));
     listaPrincipal->numeroElementos = 0;
     listaPrincipal->itensLista = NULL;
 
-    printf("Prompt:> ");
-    scanf("%[^\n]s", entrada);
-    setbuf(stdin, NULL);
-    
-    comando = strtok (entrada," ");
-
     while(strcmp(comando,"exit") != 0){
+
+        printf("Prompt:> ");
+        scanf("%[^\n]s", entrada);
+        setbuf(stdin, NULL);
+        
+        comando = strtok (entrada," ");
+        opcaoComando = strtok (NULL,"");
         
         if(strcmp(comando,"put") == 0){
-            adicionarItem(listaPrincipal,atoi(strtok (NULL,"")));
+            adicionarItem(listaPrincipal,atoi(opcaoComando));
         }else if(strcmp(comando,"last") == 0){
             mostrarUltimo(listaPrincipal);
         }else if(strcmp(comando,"first") == 0){
@@ -200,21 +232,19 @@ int main(void)
         }else if(strcmp(comando,"all") == 0){
             exibirLista(listaPrincipal);
         }else if(strcmp(comando,"get") == 0){
-            mostrarValorUnico(listaPrincipal,atoi(strtok (NULL,"")));
+            mostrarValorUnico(listaPrincipal,atoi(opcaoComando));
         }else if(strcmp(comando,"remove") == 0){
-            removerValor(listaPrincipal,atoi(strtok (NULL,"")));
+            removerValor(listaPrincipal,atoi(opcaoComando));
+        }else if(strcmp(comando,"sort") == 0){
+            if(strcmp(opcaoComando,"asc") == 0){
+                ordernarLista(listaPrincipal,ordernarCrescente);
+            }else{
+                ordernarLista(listaPrincipal,ordernarDecrescente);
+            }
         }else if(strcmp(comando,"help") == 0){
             listarComandos();
         }
-
-        printf("Prompt:> ");
-        scanf("%[^\n]s", entrada);
-        setbuf(stdin, NULL);
-        comando = strtok (entrada," ");
     }
     
-
-    
-  
   return 0;
 }

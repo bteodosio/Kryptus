@@ -2,7 +2,7 @@
 
 ![](./lista.jpeg)
 
-##Aplicação em C usando lista encadeada
+## Aplicação em C usando lista encadeada
 
 Funções implementadas:
 * Get - Acessa o valor do elemento localizado na posição passa por parametro

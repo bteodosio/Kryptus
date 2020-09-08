@@ -184,18 +184,59 @@ void removerValor(listaElementos *ponteiroLista, int valor){
 
 void ordernarLista(listaElementos *ponteiroLista, int tipoOrdenacao){
     if(ponteiroLista->numeroElementos != 0){
-        elementosLista *elementoListaTemp = ponteiroLista->itensLista;
+        
+        elementosLista *elementoListaTemp;
+        elementosLista *elementoListaAnterior = NULL;
+        elementosLista *elementoListaComparador = ponteiroLista->itensLista;
         elementosLista *elementoAuxiliaTroca;
+        int ocorreuAlteracao = 0;
 
-        while(elementoListaTemp->ponteiroProximo != NULL){
-            if(elementoListaTemp->intConteudo < elementoListaTemp->ponteiroProximo->intConteudo){
-                printf("Entrei menor\n");
-                elementoAuxiliaTroca = elementoListaTemp->ponteiroProximo;
-                elementoListaTemp->ponteiroProximo = elementoListaTemp->ponteiroProximo->ponteiroProximo;
-                elementoAuxiliaTroca->ponteiroProximo = elementoListaTemp;
-                elementoListaTemp = elementoAuxiliaTroca;
+        while (elementoListaComparador != NULL)
+        {
+            elementoListaTemp = elementoListaComparador;
+
+            while (elementoListaTemp != NULL && elementoListaTemp->ponteiroProximo != NULL)
+            {
+
+                if( (elementoListaComparador->intConteudo > elementoListaTemp->ponteiroProximo->intConteudo && tipoOrdenacao == ordernarCrescente) || (elementoListaComparador->intConteudo < elementoListaTemp->ponteiroProximo->intConteudo && tipoOrdenacao == ordernarDecrescente) ){
+                    
+                    elementoAuxiliaTroca = elementoListaTemp->ponteiroProximo;
+                    
+                    elementoListaTemp->ponteiroProximo = elementoAuxiliaTroca->ponteiroProximo;
+                    
+                    elementoAuxiliaTroca->ponteiroProximo = elementoListaComparador;
+
+                    if (elementoListaComparador == ponteiroLista->itensLista)
+                    {
+                       ponteiroLista->itensLista = elementoAuxiliaTroca;
+                    }
+                    
+                    elementoListaComparador = elementoAuxiliaTroca;
+
+                    if(elementoListaAnterior != NULL){
+                        elementoListaAnterior->ponteiroProximo = elementoAuxiliaTroca;
+                    }
+                    
+                    exibirLista(ponteiroLista);
+
+                    ocorreuAlteracao = 1;
+                }
+
+                elementoListaTemp = elementoListaTemp->ponteiroProximo;
             }
-            elementoListaTemp = elementoListaTemp->ponteiroProximo;
+
+            if(ocorreuAlteracao == 1){
+                break;
+            }
+
+            elementoListaAnterior = elementoListaComparador;
+            elementoListaComparador = elementoListaComparador->ponteiroProximo;
+        
+        }
+        
+        
+        if(ocorreuAlteracao == 1){
+            ordernarLista(ponteiroLista,tipoOrdenacao);
         }
 
     }else{
